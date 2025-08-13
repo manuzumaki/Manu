@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>अभिमन्यु शाखा - संगठनात्मक निर्देशिका</title>
+    <style>
+        :root {
+            --bg-start: #1a1a2e;
+            --bg-mid: #16213e;
+            --bg-end: #0f0f23;
+            --surface-0: rgba(20, 20, 35, 0.8);
+            --surface-1: rgba(30, 30, 50, 0.95);
+            --surface-2: rgba(40, 40, 60, 0.85);
+            --surface-3: rgba(60, 60, 80, 0.8);
+            --primary: #4facfe;
+            --primary-2: #00f2fe;
+            --accent: #667eea;
+            --warning: #ff6b6b;
+            --text-0: #ffffff;
+            --text-1: rgba(255, 255, 255, 0.9);
+            --text-2: rgba(255, 255, 255, 0.75);
+            --text-3: rgba(255, 255, 255, 0.6);
+            --border: rgba(255, 255, 255, 0.12);
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --focus: 0 0 0 3px rgba(102, 126, 234, 0.35), 0 0 0 1px #667eea inset;
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body { height: 100%; }
+
+        body {
+            margin: 0;
+            font-family: 'Noto Sans Devanagari', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-mid) 50%, var(--bg-end) 100%);
+            color: var(--text-1);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--surface-1);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            position: relative;
+            background: linear-gradient(135deg, var(--warning), #ee5a24);
+            color: var(--text-0);
+            padding: 32px 28px;
+            text-align: center;
+            isolation: isolate;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(1200px 300px at 50% -10%, rgba(255,255,255,0.2), transparent 50%);
+            opacity: .35;
+            pointer-events: none;
+        }
+        .header h1 {
+            margin: 0 0 6px 0;
+            font-size: clamp(1.6rem, 2.6vw + 1rem, 2.6rem);
+            font-weight: 800;
+            letter-spacing: .3px;
+        }
+        .header .subtitle {
+            font-size: 1rem;
+            opacity: .92;
+        }
+
+        .content { padding: 32px; background: var(--surface-0); }
+
+        .search-container { position: relative; margin-bottom: 24px; }
+        .search-box {
+            width: 100%;
+            padding: 14px 48px 14px 18px;
+            border: 2px solid var(--border);
+            background: rgba(30, 30, 50, 0.92);
+            color: var(--text-0);
+            border-radius: 40px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color .25s ease, box-shadow .25s ease, background .25s ease;
+        }
+        .search-box::placeholder { color: var(--text-3); }
+        .search-box:focus { border-color: var(--accent); box-shadow: var(--focus); background: rgba(30, 30, 50, 1); }
+        .search-icon { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--text-3); font-size: 18px; pointer-events: none; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .stat-card {
+            background: var(--surface-3);
+            color: var(--text-1);
+            padding: 22px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 16px rgba(0,0,0,.25);
+            transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+        }
+        .stat-card:hover { transform: translateY(-4px); background: rgba(70,70,90,.92); box-shadow: 0 8px 24px rgba(0,0,0,.28); }
+        .stat-number { font-size: clamp(1.6rem, 1.2vw + 1rem, 2.4rem); font-weight: 800; display: block; }
+        .stat-label { font-size: .95rem; opacity: .9; margin-top: 6px; }
+
+        .location-filter {
+            display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px;
+        }
+        .filter-chip {
+            background: rgba(55,55,75,.86);
+            color: var(--text-1);
+            padding: 10px 16px;
+            border-radius: 999px;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            font-weight: 600; font-size: .95rem;
+            transition: transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+            user-select: none;
+        }
+        .filter-chip:hover { transform: translateY(-1px); background: rgba(65,65,85,.95); box-shadow: 0 4px 12px rgba(0,0,0,.25); border-color: rgba(255,255,255,.2); }
+        .filter-chip.active { background: rgba(90,90,110,1); color: var(--text-0); border-color: rgba(255,255,255,.28); box-shadow: 0 2px 10px rgba(0,0,0,.22); }
+        .filter-chip:focus-visible { outline: none; box-shadow: var(--focus); }
+
+        .section-card {
+            background: rgba(28, 28, 46, .9);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            overflow: hidden; margin-bottom: 18px;
+            box-shadow: 0 4px 18px rgba(0,0,0,.28);
+        }
+        .section-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+            color: var(--text-0);
+            padding: 18px 22px; cursor: pointer;
+            display: flex; align-items: center; justify-content: space-between;
+            position: relative; transition: background .25s ease;
+        }
+        .section-header:hover { filter: brightness(1.05); }
+        .section-title { font-size: 1.2rem; font-weight: 700; }
+        .toggle-icon { font-size: 1.2rem; transition: transform .25s ease; }
+        .section-header.active .toggle-icon { transform: rotate(180deg); }
+
+        .section-content { max-height: 0; overflow: hidden; transition: max-height .35s ease; }
+        .section-content.active { max-height: 2000px; }
+
+        .members-grid { padding: 20px; background: rgba(20, 20, 35, 0.6); }
+        .member-item {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 16px;
+            padding: 14px 16px; margin-bottom: 10px;
+            background: var(--surface-2);
+            border: 1px solid rgba(255,255,255,.08);
+            border-left: 4px solid rgba(120, 120, 140, 0.9);
+            border-radius: var(--radius-sm);
+            transition: transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+        }
+        .member-item:hover { transform: translateX(6px); background: rgba(52,52,76,.95); box-shadow: 0 6px 18px rgba(0,0,0,.22); border-color: rgba(255,255,255,.16); }
+        .member-name { color: var(--text-0); font-weight: 700; font-size: 1.05rem; }
+        .member-role { color: var(--text-3); font-size: .85rem; margin-top: 2px; }
+        .member-location { background: rgba(80,80,100,.95); color: var(--text-1); padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,.14); font-weight: 600; font-size: .9rem; }
+
+        .no-results { text-align: center; padding: 36px; color: var(--text-3); font-style: italic; }
+
+        @media (max-width: 768px) {
+            .content { padding: 20px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .member-item { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>अभिमन्यु शाखा</h1>
+            <div class="subtitle">संगठनात्मक निर्देशिका एवं स्वयंसेवक सूची</div>
+        </header>
+        <main class="content">
+            <div class="search-container">
+                <label for="searchInput" class="visually-hidden" aria-hidden="true" style="position:absolute;clip:rect(0 0 0 0);clip-path:inset(50%);height:1px;width:1px;overflow:hidden;white-space:nowrap;">खोज</label>
+                <input type="text" id="searchInput" class="search-box" placeholder="स्वयंसेवक या स्थान खोजें..." aria-label="स्वयंसेवक या स्थान खोजें" />
+                <span class="search-icon" aria-hidden="true">🔍</span>
+            </div>
+
+            <section class="stats-grid" aria-label="आंकड़े">
+                <div class="stat-card" role="status" aria-live="polite">
+                    <span class="stat-number" id="totalMembers">0</span>
+                    <div class="stat-label">कुल स्वयंसेवक</div>
+                </div>
+                <div class="stat-card" role="status" aria-live="polite">
+                    <span class="stat-number" id="totalLocations">0</span>
+                    <div class="stat-label">स्थान</div>
+                </div>
+                <div class="stat-card" role="status" aria-live="polite">
+                    <span class="stat-number" id="totalSections">0</span>
+                    <div class="stat-label">विभाग</div>
+                </div>
+            </section>
+
+            <nav class="location-filter" aria-label="स्थान फ़िल्टर">
+                <button class="filter-chip active" data-location="all" aria-pressed="true" type="button">सभी स्थान</button>
+                <button class="filter-chip" data-location="गीता कॉलोनी" aria-pressed="false" type="button">गीता कॉलोनी</button>
+                <button class="filter-chip" data-location="गौतम नगर" aria-pressed="false" type="button">गौतम नगर</button>
+                <button class="filter-chip" data-location="उत्तम नगर" aria-pressed="false" type="button">उत्तम नगर</button>
+                <button class="filter-chip" data-location="महम चुंगी" aria-pressed="false" type="button">महम चुंगी</button>
+                <button class="filter-chip" data-location="गांधी नगर" aria-pressed="false" type="button">गांधी नगर</button>
+                <button class="filter-chip" data-location="देवी नगर" aria-pressed="false" type="button">देवी नगर</button>
+                <button class="filter-chip" data-location="देती नगर" aria-pressed="false" type="button">देती नगर</button>
+                <button class="filter-chip" data-location="काठ मण्डी" aria-pressed="false" type="button">काठ मण्डी</button>
+                <button class="filter-chip" data-location="ठसका" aria-pressed="false" type="button">ठसका</button>
+                <button class="filter-chip" data-location="ताऊ देविलाल" aria-pressed="false" type="button">ताऊ देविलाल</button>
+                <button class="filter-chip" data-location="राम गली" aria-pressed="false" type="button">राम गली</button>
+            </nav>
+
+            <section class="section-card">
+                <div class="section-header" role="button" tabindex="0" aria-expanded="false" aria-controls="memberList">
+                    <div class="section-title">📋 मुख्य स्वयंसेवक सूची</div>
+                    <div class="toggle-icon" aria-hidden="true">▼</div>
+                </div>
+                <div class="section-content" id="memberList">
+                    <div class="members-grid" id="membersContainer"></div>
+                </div>
+            </section>
+
+            <section class="section-card">
+                <div class="section-header" role="button" tabindex="0" aria-expanded="false" aria-controls="manuSection">
+                    <div class="section-title">👤 मनु जी का विभाग</div>
+                    <div class="toggle-icon" aria-hidden="true">▼</div>
+                </div>
+                <div class="section-content" id="manuSection">
+                    <div class="members-grid">
+                        <div class="member-item">
+                            <div>
+                                <div class="member-name">राहुल सिंह</div>
+                                <div class="member-role">टीम सदस्य</div>
+                            </div>
+                            <div class="member-location">विभाग सदस्य</div>
+                        </div>
+                        <div class="member-item">
+                            <div>
+                                <div class="member-name">नेहा वर्मा</div>
+                                <div class="member-role">टीम सदस्य</div>
+                            </div>
+                            <div class="member-location">विभाग सदस्य</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section-card">
+                <div class="section-header" role="button" tabindex="0" aria-expanded="false" aria-controls="vijaySection">
+                    <div class="section-title">👤 विजय जी का विभाग</div>
+                    <div class="toggle-icon" aria-hidden="true">▼</div>
+                </div>
+                <div class="section-content" id="vijaySection">
+                    <div class="members-grid">
+                        <div class="member-item">
+                            <div>
+                                <div class="member-name">राहुल सिंह</div>
+                                <div class="member-role">टीम सदस्य</div>
+                            </div>
+                            <div class="member-location">विभाग सदस्य</div>
+                        </div>
+                        <div class="member-item">
+                            <div>
+                                <div class="member-name">नेहा वर्मा</div>
+                                <div class="member-role">टीम सदस्य</div>
+                            </div>
+                            <div class="member-location">विभाग सदस्य</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const members = [
+            { name: "मनु जी", role: "शा. का०", location: "गीता कॉलोनी" },
+            { name: "विजय जी", role: "मु०शि०", location: "गीता कॉलोनी" },
+            { name: "प्रिंस जी", role: "स. मु.शि.", location: "गीता कॉलोनी" },
+            { name: "जय जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "जयंत जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "लक्ष्य जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "प्रीत जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "अर्जुन जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "लव-कुश जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "अनुराग जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "सफल जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "सक्षम जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "हर्ष जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "दीपांशु जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "हिमांशु जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "अरविन्द जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "सौरभ जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "पंकज जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "वंश जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "हर्ष जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "हिमांशु जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "प्रतीक जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "वंशदीप जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "हिमांशु जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "यश जी", role: "स्वयंसेवक", location: "गीता कॉलोनी" },
+            { name: "दीपांश जी", role: "स्वयंसेवक", location: "गौतम नगर" },
+            { name: "सहदेव जी", role: "स्वयंसेवक", location: "गौतम नगर" },
+            { name: "गौतम जी", role: "स्वयंसेवक", location: "गौतम नगर" },
+            { name: "जय जी", role: "स्वयंसेवक", location: "गौतम नगर" },
+            { name: "अभिमन्यु जी", role: "स्वयंसेवक", location: "उत्तम नगर" },
+            { name: "केशव जी", role: "स्वयंसेवक", location: "महम चुंगी" },
+            { name: "आकाश जी", role: "स्वयंसेवक", location: "महम चुंगी" },
+            { name: "राहुल जी", role: "स्वयंसेवक", location: "महम चुंगी" },
+            { name: "अमन जी", role: "स्वयंसेवक", location: "महम चुंगी" },
+            { name: "नमन जी", role: "स्वयंसेवक", location: "महम चुंगी" },
+            { name: "नितिन जी", role: "स्वयंसेवक", location: "महम चुंगी" },
+            { name: "राहुल जी", role: "स्वयंसेवक", location: "महम चुंगी" },
+            { name: "शम्भु जी", role: "स्वयंसेवक", location: "गांधी नगर" },
+            { name: "कार्तिक जी", role: "स्वयंसेवक", location: "गांधी नगर" },
+            { name: "माणिक जी", role: "स्वयंसेवक", location: "गांधी नगर" },
+            { name: "रूद्र जी", role: "स्वयंसेवक", location: "गांधी नगर" },
+            { name: "विष्ण जी", role: "स्वयंसेवक", location: "गांधी नगर" },
+            { name: "राहुल जी चांदीवाल", role: "स्वयंसेवक", location: "गांधी नगर" },
+            { name: "पारस जी", role: "स्वयंसेवक", location: "गांधी नगर" },
+            { name: "ईशु जी", role: "स्वयंसेवक", location: "ठसका" },
+            { name: "ईशांत जी", role: "स्वयंसेवक", location: "देवी नगर" },
+            { name: "तेजस जी", role: "स्वयंसेवक", location: "देती नगर" },
+            { name: "वंश जी", role: "स्वयंसेवक", location: "देवी नगर" },
+            { name: "अखिल जी", role: "स्वयंसेवक", location: "देवी नगर" },
+            { name: "गौरत जी", role: "स्वयंसेवक", location: "ताऊ देविलाल" },
+            { name: "यश जी", role: "स्वयंसेवक", location: "काठ मण्डी" },
+            { name: "पूर्व जी", role: "स्वयंसेवक", location: "काठ मण्डी" },
+            { name: "जतिन जी", role: "स्वयंसेवक", location: "काठ मण्डी" },
+            { name: "रोनित जी", role: "स्वयंसेवक", location: "काठ मण्डी" },
+            { name: "नव्य जी", role: "स्वयंसेवक", location: "राम गली" }
+        ];
+
+        let activeLocationFilter = 'all';
+        let currentSearchQuery = '';
+
+        function normalizeString(input) {
+            return (input || '').toString().trim().toLowerCase();
+        }
+
+        function autoSelectLocationFilterFromSearch(searchTerm) {
+            const term = normalizeString(searchTerm);
+            const mapping = {
+                'गीता': 'गीता कॉलोनी',
+                'कॉलोनी': 'गीता कॉलोनी',
+                'गौतम': 'गौतम नगर',
+                'उत्तम': 'उत्तम नगर',
+                'महम': 'महम चुंगी',
+                'चुंगी': 'महम चुंगी',
+                'गांधी': 'गांधी नगर',
+                'देवी': 'देवी नगर',
+                'देती': 'देती नगर',
+                'काठ': 'काठ मण्डी',
+                'ठसका': 'ठसका',
+                'ताऊ': 'ताऊ देविलाल',
+                'राम': 'राम गली'
+            };
+
+            let target = null;
+            for (const key in mapping) {
+                if (term.includes(key)) { target = mapping[key]; break; }
+            }
+
+            const chips = document.querySelectorAll('.filter-chip');
+            chips.forEach(chip => chip.classList.remove('active'));
+            chips.forEach(chip => chip.setAttribute('aria-pressed', 'false'));
+
+            if (target) {
+                chips.forEach(chip => {
+                    if (chip.getAttribute('data-location') === target) {
+                        chip.classList.add('active');
+                        chip.setAttribute('aria-pressed', 'true');
+                        activeLocationFilter = target;
+                    }
+                });
+            } else {
+                chips.forEach(chip => {
+                    if (chip.getAttribute('data-location') === 'all') {
+                        chip.classList.add('active');
+                        chip.setAttribute('aria-pressed', 'true');
+                        activeLocationFilter = 'all';
+                    }
+                });
+            }
+        }
+
+        function updateStats() {
+            const totalMembers = members.length;
+            const locations = Array.from(new Set(members.map(m => m.location)));
+            const totalLocations = locations.length;
+            const totalSections = 3;
+            document.getElementById('totalMembers').textContent = totalMembers;
+            document.getElementById('totalLocations').textContent = totalLocations;
+            document.getElementById('totalSections').textContent = totalSections;
+        }
+
+        function getFilteredMembers() {
+            let filtered = members;
+            if (activeLocationFilter !== 'all') {
+                filtered = filtered.filter(m => m.location === activeLocationFilter ||
+                    (activeLocationFilter === 'गीता कॉलोनी' && m.location === 'गीता कोलोनी'));
+            }
+            if (currentSearchQuery) {
+                const q = normalizeString(currentSearchQuery);
+                filtered = filtered.filter(m =>
+                    normalizeString(m.name).includes(q) ||
+                    normalizeString(m.role).includes(q) ||
+                    normalizeString(m.location).includes(q)
+                );
+            }
+            return filtered;
+        }
+
+        function renderMembers() {
+            const container = document.getElementById('membersContainer');
+            const list = getFilteredMembers();
+            if (!list.length) {
+                container.innerHTML = '<div class="no-results">कोई परिणाम नहीं मिला</div>';
+                return;
+            }
+            container.innerHTML = list.map((m, i) => `
+                <div class="member-item">
+                    <div>
+                        <div class="member-name">${i + 1}) ${m.name}</div>
+                        <div class="member-role">${m.role}</div>
+                    </div>
+                    <div class="member-location">${m.location}</div>
+                </div>
+            `).join('');
+        }
+
+        function ensureSectionOpen(sectionId) {
+            const content = document.getElementById(sectionId);
+            const header = content.previousElementSibling;
+            if (!content.classList.contains('active')) {
+                content.classList.add('active');
+                header.classList.add('active');
+                header.setAttribute('aria-expanded', 'true');
+            }
+        }
+
+        function toggleSection(sectionId) {
+            const content = document.getElementById(sectionId);
+            const header = content.previousElementSibling;
+            const willOpen = !content.classList.contains('active');
+            content.classList.toggle('active');
+            header.classList.toggle('active');
+            header.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStats();
+            renderMembers();
+
+            const search = document.getElementById('searchInput');
+            search.addEventListener('input', (e) => {
+                currentSearchQuery = e.target.value;
+                if (currentSearchQuery) {
+                    ensureSectionOpen('memberList');
+                    autoSelectLocationFilterFromSearch(currentSearchQuery);
+                }
+                renderMembers();
+            });
+
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.addEventListener('click', function () {
+                    const content = document.getElementById('memberList');
+                    const header = content.previousElementSibling;
+                    const isOpen = content.classList.contains('active');
+                    const clicked = this.getAttribute('data-location');
+                    const isAlreadyActive = this.classList.contains('active');
+
+                    if (isAlreadyActive && isOpen) {
+                        content.classList.remove('active');
+                        header.classList.remove('active');
+                        header.setAttribute('aria-expanded', 'false');
+                        return;
+                    }
+
+                    document.querySelectorAll('.filter-chip').forEach(c => { c.classList.remove('active'); c.setAttribute('aria-pressed', 'false'); });
+                    this.classList.add('active');
+                    this.setAttribute('aria-pressed', 'true');
+                    activeLocationFilter = clicked;
+
+                    ensureSectionOpen('memberList');
+
+                    search.value = '';
+                    currentSearchQuery = '';
+
+                    renderMembers();
+                });
+
+                chip.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.click(); }
+                });
+            });
+
+            document.querySelectorAll('.section-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const controls = header.getAttribute('aria-controls');
+                    toggleSection(controls);
+                });
+                header.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        const controls = header.getAttribute('aria-controls');
+                        toggleSection(controls);
+                    }
+                });
+            });
+
+            ensureSectionOpen('memberList');
+        });
+    </script>
+</body>
+</html>
